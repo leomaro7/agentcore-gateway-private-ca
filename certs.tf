@@ -6,9 +6,10 @@ resource "tls_private_key" "ca" {
   rsa_bits  = 2048
 }
 
+# Gateway に登録するのはこの CA の証明書（MCP サーバーの証明書ではない）
 resource "tls_self_signed_cert" "ca" {
   private_key_pem       = tls_private_key.ca.private_key_pem
-  is_ca_certificate     = true
+  is_ca_certificate     = true # CA:TRUE。付いていないとターゲットが FAILED になる
   validity_period_hours = 24 * 30
   allowed_uses          = ["cert_signing", "crl_signing"]
 

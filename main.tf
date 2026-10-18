@@ -125,7 +125,7 @@ resource "aws_iam_role" "gateway" {
   })
 }
 
-# Gateway は CA の証明書をこのロールで読みに行く
+# Gateway は CA の証明書をこのロール（Gateway の実行ロール）で読みに行く
 resource "aws_iam_role_policy" "gateway_ca_read" {
   role = aws_iam_role.gateway.id
   name = "ca-read"
@@ -144,7 +144,7 @@ resource "aws_bedrockagentcore_gateway" "this" {
   name            = "${var.name_prefix}-gw"
   role_arn        = aws_iam_role.gateway.arn
   protocol_type   = "MCP"
-  authorizer_type = "AWS_IAM" # privateEndpoint のターゲットは NONE だと作れない
+  authorizer_type = "AWS_IAM" # privateEndpoint のターゲットは NONE だと作れない（インターセプター Lambda を設定した場合を除く）
 
   depends_on = [aws_iam_role_policy.gateway_ca_read]
 }
